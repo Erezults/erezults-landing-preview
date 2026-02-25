@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-REZULTS — Option D: Cinematic</title>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root { --purple:#7B2FBE; --blue:#2D6BE4; --pink:#FF2D9F; --orange:#FF8C00; }
+    [data-theme="dark"] {
+      --bg:#04040e; --text:#e8e8ff; --muted:#6666aa;
+      --border:rgba(255,255,255,0.07); --card:rgba(255,255,255,0.04);
+    }
+    [data-theme="light"] {
+      --bg:#f4f4fc; --text:#1a1a3e; --muted:#7777bb;
+      --border:rgba(0,0,100,0.08); --card:rgba(255,255,255,0.95);
+    }
+    html { scroll-snap-type:y mandatory; overflow-y:scroll; scroll-behavior:smooth; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); transition:background 0.3s,color 0.3s; }
+    [dir="rtl"] { direction:rtl; }
+
+    .design-label { position:fixed;bottom:20px;left:20px;z-index:999;background:var(--purple);color:#fff;padding:6px 14px;border-radius:100px;font-size:0.75rem;font-weight:700; }
+
+    /* Orbs */
+    .orb { position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:0; }
+    .orb1 { width:700px;height:700px;background:var(--purple);opacity:0.1;top:-300px;left:-200px; }
+    .orb2 { width:500px;height:500px;background:var(--blue);opacity:0.08;bottom:0;right:-100px; }
+    [data-theme="light"] .orb { opacity:0.04; }
+
+    /* MINIMAL HEADER */
+    header {
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:20px 40px;
+    }
+    .logo { display:flex;align-items:center;gap:10px; }
+    .logo-sq { width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff; }
+    .logo-name { font-weight:800;font-size:0.95rem; }
+    .hdr-right { display:flex;align-items:center;gap:10px; }
+    .hdr-btn { padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);color:var(--text);cursor:pointer;font-size:0.78rem;font-weight:600;transition:all 0.2s; }
+    .hdr-btn:hover { border-color:var(--purple);color:var(--purple); }
+    .burger { width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all 0.2s; }
+    .burger:hover { border-color:var(--purple); }
+    .burger span { display:block;width:16px;height:1.5px;background:var(--text);border-radius:2px;transition:all 0.3s; }
+
+    /* MENU OVERLAY */
+    .menu-overlay {
+      position:fixed;inset:0;z-index:300;
+      background:rgba(4,4,14,0.97);
+      backdrop-filter:blur(24px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;
+      transition:opacity 0.4s;
+    }
+    [data-theme="light"] .menu-overlay { background:rgba(244,244,252,0.97); }
+    .menu-overlay.open { opacity:1;pointer-events:all; }
+    .menu-close { position:absolute;top:24px;right:40px;font-size:1.5rem;cursor:pointer;color:var(--muted);transition:color 0.2s; }
+    .menu-close:hover { color:var(--text); }
+    .menu-items { display:flex;flex-direction:column;align-items:center;gap:8px; }
+    .menu-item { font-size:clamp(2rem,5vw,4rem);font-weight:900;color:var(--muted);text-decoration:none;transition:all 0.2s;letter-spacing:-1px;padding:8px 0; }
+    .menu-item:hover { color:transparent;background:linear-gradient(135deg,var(--blue),var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transform:translateX(10px); }
+    .menu-ctrls { position:absolute;bottom:36px;display:flex;gap:12px; }
+    .menu-ctrl-btn { padding:10px 24px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s; }
+    .menu-ctrl-btn:hover { border-color:var(--purple);color:var(--purple); }
+    .menu-domain { position:absolute;bottom:80px;color:var(--muted);font-size:0.82rem; }
+
+    /* SCROLL DOT NAV */
+    .dot-nav { position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:150;display:flex;flex-direction:column;gap:10px; }
+    [dir="rtl"] .dot-nav { right:auto;left:24px; }
+    .dot-nav-item { width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all 0.3s;border:1px solid var(--muted); }
+    .dot-nav-item.active { background:var(--purple);border-color:var(--purple);transform:scale(1.4); }
+
+    /* SECTIONS — all 100vh */
+    section { min-height:100vh;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 40px 60px;overflow:hidden; }
+
+    /* S1 — Hero */
+    .s1 { text-align:center; }
+    .s1-eyebrow { display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:100px;border:1px solid var(--border);background:rgba(255,255,255,0.04);font-size:0.75rem;color:var(--muted);margin-bottom:32px; }
+    .pulse { width:6px;height:6px;border-radius:50%;background:var(--pink);animation:pulse 2s infinite; }
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    .s1 h1 { font-size:clamp(3rem,8vw,8rem);font-weight:900;line-height:1;letter-spacing:-3px;margin-bottom:24px; }
+    .s1 h1 .grad { background:linear-gradient(135deg,var(--blue) 0%,var(--purple) 50%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .s1 .tagline { font-size:clamp(0.95rem,2vw,1.25rem);color:var(--muted);max-width:520px;margin:0 auto 48px;line-height:1.8; }
+    .s1-btns { display:flex;gap:16px;justify-content:center;flex-wrap:wrap; }
+    .btn-p { padding:14px 32px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;border:none;font-size:0.95rem;font-weight:700;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s; }
+    .btn-p:hover { transform:translateY(-3px);box-shadow:0 10px 32px rgba(123,47,190,0.5); }
+    .btn-s { padding:14px 32px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text);font-size:0.95rem;font-weight:600;cursor:pointer;backdrop-filter:blur(10px);transition:all 0.2s; }
+    .btn-s:hover { border-color:var(--purple); }
+    .scroll-cue { position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:0.72rem;animation:bob 3s ease-in-out infinite; }
+    .scroll-line { width:1px;height:48px;background:linear-gradient(to bottom,var(--purple),transparent); }
+    @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+    /* S2 — Apps */
+    .s2 { align-items:flex-start;justify-content:flex-start;padding-top:120px;max-width:1200px;margin:0 auto;width:100%; }
+    .sec-number { font-size:0.72rem;text-transform:uppercase;letter-spacing:4px;color:var(--purple);margin-bottom:12px; }
+    .s2 h2 { font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:48px; }
+    .cin-apps { display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;width:100%; }
+    .cin-card { background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;transition:all 0.3s;cursor:pointer; }
+    .cin-card:hover { border-color:var(--purple);transform:translateY(-5px);box-shadow:0 16px 48px rgba(123,47,190,0.18); }
+    .cin-ico { width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:16px; }
+    .cin-card h3 { font-size:1rem;font-weight:700;margin-bottom:6px; }
+    .cin-card p { font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:16px; }
+    .cin-link { font-size:0.82rem;font-weight:700;color:var(--purple);text-decoration:none; }
+
+    /* S3 — About */
+    .s3 { text-align:center; }
+    .s3 .sec-number { text-align:center; }
+    .s3 h2 { font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:24px; }
+    .s3 h2 span { background:linear-gradient(135deg,var(--blue),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .s3 p { color:var(--muted);max-width:680px;margin:0 auto;line-height:1.85;font-size:1.05rem;margin-bottom:48px; }
+    .s3-stats { display:flex;gap:40px;justify-content:center;flex-wrap:wrap; }
+    .s3-stat { text-align:center; }
+    .s3-val { font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,var(--blue),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .s3-lbl { font-size:0.82rem;color:var(--muted);margin-top:4px; }
+
+    /* Dividers */
+    .section-border { position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent); }
+
+    /* Footer section */
+    .s-footer { min-height:auto;scroll-snap-align:start;padding:40px;text-align:center;border-top:1px solid var(--border);color:var(--muted);font-size:0.82rem; }
+    .s-footer a { color:var(--purple);text-decoration:none; }
+  </style>
+</head>
+<body>
+  <div class="design-label">OPTION D — Cinematic (Fullscreen + Hamburger)</div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <!-- MENU OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-close" onclick="closeMenu()">✕</div>
+    <nav class="menu-items">
+      <a class="menu-item" href="#s1" onclick="closeMenu()" data-en="Home" data-he="ראשי">Home</a>
+      <a class="menu-item" href="#s2" onclick="closeMenu()" data-en="Applications" data-he="אפליקציות">Applications</a>
+      <a class="menu-item" href="#s3" onclick="closeMenu()" data-en="About" data-he="אודות">About</a>
+      <a class="menu-item" href="#contact" onclick="closeMenu()" data-en="Contact" data-he="צור קשר">Contact</a>
+    </nav>
+    <div class="menu-domain">erezults.com</div>
+    <div class="menu-ctrls">
+      <button class="menu-ctrl-btn" onclick="toggleLang()" id="langBtn">🌐 HE</button>
+      <button class="menu-ctrl-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-sq">ER</div>
+      <div class="logo-name">E-REZULTS</div>
+    </div>
+    <div class="hdr-right">
+      <button class="hdr-btn" onclick="toggleLang()" id="langBtnH">🌐 HE</button>
+      <button class="hdr-btn" onclick="toggleTheme()" id="themeBtnH">☀️ Light</button>
+      <div class="burger" onclick="openMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- DOT NAV -->
+  <div class="dot-nav">
+    <div class="dot-nav-item active" onclick="scrollTo(0,0)"></div>
+    <div class="dot-nav-item" onclick="document.getElementById('s2').scrollIntoView()"></div>
+    <div class="dot-nav-item" onclick="document.getElementById('s3').scrollIntoView()"></div>
+    <div class="dot-nav-item" onclick="document.getElementById('contact').scrollIntoView()"></div>
+  </div>
+
+  <!-- S1 — HERO -->
+  <section class="s1" id="s1">
+    <div class="s1-eyebrow"><span class="pulse"></span><span data-en="Financial Intelligence Platform" data-he="פלטפורמת אינטליגנציה פיננסית">Financial Intelligence Platform</span></div>
+    <h1><span class="grad" data-en="E-REZULTS" data-he="E-REZULTS">E-REZULTS</span></h1>
+    <p class="tagline" data-en="Where finance meets intelligence — purpose-built web applications for the modern financial professional." data-he="כשפיננסים פוגשים אינטליגנציה — אפליקציות ווב ייעודיות לאנשי הפיננסים המודרניים.">Where finance meets intelligence — purpose-built web applications for the modern financial professional.</p>
+    <div class="s1-btns">
+      <button class="btn-p" onclick="document.getElementById('s2').scrollIntoView()" data-en="Explore Applications ↓" data-he="↓ גלה אפליקציות">Explore Applications ↓</button>
+      <button class="btn-s" onclick="document.getElementById('s3').scrollIntoView()" data-en="Our Story" data-he="הסיפור שלנו">Our Story</button>
+    </div>
+    <div class="scroll-cue"><div class="scroll-line"></div><span>scroll</span></div>
+    <div class="section-border"></div>
+  </section>
+
+  <!-- S2 — APPS -->
+  <section class="s2" id="s2">
+    <div>
+      <p class="sec-number" data-en="01 — Applications" data-he="01 — אפליקציות">01 — Applications</p>
+      <h2 data-en="Our Applications" data-he="האפליקציות שלנו">Our<br>Applications</h2>
+      <div class="cin-apps">
+        <div class="cin-card"><div class="cin-ico" style="background:linear-gradient(135deg,#2D6BE4,#7B2FBE)">📊</div><h3>App Name 1</h3><p data-en="Your application description here — purpose-built for financial intelligence and real-time analytics." data-he="תיאור האפליקציה שלך כאן — בנוי עבור אינטליגנציה פיננסית ואנליטיקה בזמן אמת.">Your application description here — purpose-built for financial intelligence and real-time analytics.</p><a href="#" class="cin-link" data-en="Launch →" data-he="→ פתח">Launch →</a></div>
+        <div class="cin-card"><div class="cin-ico" style="background:linear-gradient(135deg,#7B2FBE,#FF2D9F)">🗄️</div><h3>App Name 2</h3><p data-en="Your application description here — intelligent database management and data organization." data-he="תיאור האפליקציה שלך כאן — ניהול מסד נתונים חכם וארגון מידע.">Your application description here — intelligent database management and data organization.</p><a href="#" class="cin-link" data-en="Launch →" data-he="→ פתח">Launch →</a></div>
+        <div class="cin-card"><div class="cin-ico" style="background:linear-gradient(135deg,#FF2D9F,#FF8C00)">📈</div><h3>App Name 3</h3><p data-en="Your application description here — live market data visualization and trend analysis." data-he="תיאור האפליקציה שלך כאן — ויזואליזציה של נתוני שוק חי וניתוח מגמות.">Your application description here — live market data visualization and trend analysis.</p><a href="#" class="cin-link" data-en="Launch →" data-he="→ פתח">Launch →</a></div>
+        <div class="cin-card"><div class="cin-ico" style="background:linear-gradient(135deg,#FF8C00,#2D6BE4)">📋</div><h3>App Name 4</h3><p data-en="Your application description here — automated financial reporting and export tools." data-he="תיאור האפליקציה שלך כאן — כלי דיווח פיננסי אוטומטי וייצוא.">Your application description here — automated financial reporting and export tools.</p><a href="#" class="cin-link" data-en="Launch →" data-he="→ פתח">Launch →</a></div>
+      </div>
+    </div>
+    <div class="section-border"></div>
+  </section>
+
+  <!-- S3 — ABOUT -->
+  <section class="s3" id="s3">
+    <p class="sec-number" data-en="02 — About" data-he="02 — אודות">02 — About</p>
+    <h2 data-en="Financial Technology,<br><span>Reimagined</span>" data-he="טכנולוגיה פיננסית,<br><span>מחודשת</span>">Financial Technology,<br><span>Reimagined</span></h2>
+    <p data-en="E-REZULTS is a cutting-edge technology company specializing in the development of financial web applications, intelligent databases, and advanced data organization systems. With deep expertise in financial markets — including real-time analytics, portfolio management, and structured reporting — we transform raw financial data into actionable insights for investors, analysts, and data-driven organizations worldwide." data-he="E-REZULTS היא חברת טכנולוגיה מתקדמת המתמחה בפיתוח אפליקציות פיננסיות, בסיסי נתונים חכמים ומערכות ארגון מידע. עם ידע עמוק בשווקים הפיננסיים — כולל אנליטיקה בזמן אמת, ניהול תיקים ודיווח מובנה — אנו הופכים נתונים פיננסיים גולמיים לתובנות ישימות עבור משקיעים, אנליסטים וארגונים ברחבי העולם.">E-REZULTS is a cutting-edge technology company specializing in the development of financial web applications, intelligent databases, and advanced data organization systems. With deep expertise in financial markets — including real-time analytics, portfolio management, and structured reporting — we transform raw financial data into actionable insights for investors, analysts, and data-driven organizations worldwide.</p>
+    <div class="s3-stats">
+      <div class="s3-stat"><div class="s3-val">5+</div><div class="s3-lbl" data-en="Applications" data-he="אפליקציות">Applications</div></div>
+      <div class="s3-stat"><div class="s3-val">100%</div><div class="s3-lbl" data-en="Web-Based" data-he="מבוסס ווב">Web-Based</div></div>
+      <div class="s3-stat"><div class="s3-val">∞</div><div class="s3-lbl" data-en="Data Points" data-he="נקודות מידע">Data Points</div></div>
+      <div class="s3-stat"><div class="s3-val">24/7</div><div class="s3-lbl" data-en="Available" data-he="זמינות">Available</div></div>
+    </div>
+    <div class="section-border"></div>
+  </section>
+
+  <!-- CONTACT / FOOTER -->
+  <section class="s-footer" id="contact">
+    <p style="font-size:1.5rem;font-weight:900;margin-bottom:12px">E-REZULTS</p>
+    <p style="margin-bottom:8px"><a href="mailto:info@erezults.com">info@erezults.com</a></p>
+    <p>© 2025 E-REZULTS · <a href="#">erezults.com</a></p>
+  </section>
+
+  <script>
+    // Menu
+    function openMenu() { document.getElementById('menuOverlay').classList.add('open'); }
+    function closeMenu() { document.getElementById('menuOverlay').classList.remove('open'); }
+
+    // Theme
+    function toggleTheme(){
+      const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';
+      h.setAttribute('data-theme',isDark?'light':'dark');
+      const t=isDark?'🌙 Dark':'☀️ Light';
+      document.getElementById('themeBtn').textContent=t;
+      document.getElementById('themeBtnH').textContent=t;
+    }
+
+    // Lang
+    let lang='en';
+    function toggleLang(){
+      lang=lang==='en'?'he':'en';
+      const isHe=lang==='he';
+      document.documentElement.setAttribute('dir',isHe?'rtl':'ltr');
+      const l='🌐 '+(isHe?'EN':'HE');
+      document.getElementById('langBtn').textContent=l;
+      document.getElementById('langBtnH').textContent=l;
+      document.querySelectorAll('[data-en]').forEach(el=>{ el.innerHTML=el.getAttribute('data-'+lang)||el.innerHTML; });
+    }
+
+    // Dot nav active state
+    const sections = document.querySelectorAll('section[id]');
+    const dots = document.querySelectorAll('.dot-nav-item');
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ dots.forEach(d=>d.classList.remove('active')); const i=[...sections].indexOf(e.target); if(dots[i]) dots[i].classList.add('active'); } });
+    }, {threshold:0.5});
+    sections.forEach(s=>observer.observe(s));
+  </script>
+</body>
+</html>
